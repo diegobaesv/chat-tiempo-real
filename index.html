@@ -22,7 +22,7 @@
                         + Nuevo Chat
                     </button>
                 </div>
-            
+                
                 <div class="flex items-center bg-gray-900 text-white rounded-lg px-4 py-2 mb-4 shadow-md">
                     <input type="text" placeholder="Buscar mensajes..." 
                         class="flex-1 bg-transparent focus:outline-none text-gray-300 placeholder-gray-500">
@@ -35,62 +35,14 @@
                 <!-- Contenedor de mensajes -->
                 <div id="messageContainer" class="flex flex-col space-y-4 overflow-y-auto h-[60%] bg-cover bg-center rounded-lg p-4 shadow-inner" 
                     style="background-image: url('./assets/images/fondo_mensaje_grupo6.jpeg');">
-                                        
-                    <div class="flex justify-end">
-                        <div class="bg-blue-600 text-white p-3 rounded-xl max-w-sm shadow-md">
-                            Hola, ¿cómo estás? 😄
-                            <span class="block text-xs text-gray-400 mt-1 text-right">10:30 AM</span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex justify-start">
-                        <div class="bg-gray-300 text-gray-700 p-3 rounded-xl max-w-sm shadow-md">
-                            ¡Hola! Todo bien, ¿y tú? 🌟
-                            <span class="block text-xs text-gray-500 mt-1">10:31 AM</span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex justify-end">
-                        <div class="bg-blue-600 text-white p-3 rounded-xl max-w-sm shadow-md">
-                            ¿Qué planes para hoy? 🎉
-                            <span class="block text-xs text-gray-400 mt-1 text-right">10:35 AM</span>
-                        </div>
-                    </div>
-                    <div class="flex justify-start">
-                        <div class="bg-gray-300 text-gray-700 p-3 rounded-xl max-w-sm shadow-md">
-                            Solo descansar. 😌
-                            <span class="block text-xs text-gray-500 mt-1">10:37 AM</span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex justify-end">
-                        <div class="bg-blue-600 text-white p-3 rounded-xl max-w-sm shadow-md">
-                            Yo tambien
-                            <span class="block text-xs text-gray-400 mt-1 text-right">10:39 AM</span>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end">
-                        <div class="bg-blue-600 text-white p-3 rounded-xl max-w-sm shadow-md">
-                            solo vere series hasta quedarme dormido D:
-                            <span class="block text-xs text-gray-400 mt-1 text-right">10:40 AM</span>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-start">
-                        <div class="bg-gray-300 text-gray-700 p-3 rounded-xl max-w-sm shadow-md">
-                            No hay luz en mi cuadra, asi que a dormir temprano :D
-                            <span class="block text-xs text-gray-500 mt-1">10:45 AM</span>
-                        </div>
-                    </div>
-
-
-                </div>      
                             
+                    <!-- Aquí se agregarán los mensajes dinámicamente -->
+                </div>      
+                                        
                 <div class="mt-4 flex items-center gap-3">
-                    <input type="text" placeholder="Escribe un mensaje..." 
+                    <input id="messageInput" type="text" placeholder="Escribe un mensaje..." 
                         class="flex-1 bg-gray-700 text-gray-200 border-2 border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 placeholder-gray-400">
-                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                    <button id="sendButton" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
                         Enviar
                     </button>
                 </div>
@@ -116,13 +68,46 @@
             }
             </style>
             
-            <script>  
-                document.addEventListener("DOMContentLoaded", function () {
-                const messageContainer = document.getElementById("messageContainer");
-                messageContainer.scrollTop = messageContainer.scrollHeight;
-                });
-            </script>
+            <script>
+            // Función para formatear la hora y fecha actual
+            function formatDate(date) {
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                return `${hours}:${minutes}`;
+            }
             
+            // Función para enviar un mensaje
+            document.getElementById('sendButton').addEventListener('click', function() {
+                const messageInput = document.getElementById('messageInput');
+                const messageText = messageInput.value.trim();
+                
+                if (messageText === '') return; // Evitar enviar mensajes vacíos
+                
+                const currentDate = new Date();
+                const formattedTime = formatDate(currentDate);
+                
+                // Crear un nuevo div para el mensaje
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('flex', 'justify-end');
+                messageDiv.innerHTML = `
+                    <div class="bg-blue-600 text-white p-3 rounded-xl max-w-sm shadow-md">
+                        ${messageText}
+                        <span class="block text-xs text-gray-400 mt-1 text-right">${formattedTime}</span>
+                    </div>
+                `;
+                
+                // Agregar el mensaje al contenedor
+                const messageContainer = document.getElementById('messageContainer');
+                messageContainer.appendChild(messageDiv);
+                
+                // Limpiar el input de mensaje
+                messageInput.value = '';
+                
+                // Hacer scroll hasta el último mensaje
+                messageContainer.scrollTop = messageContainer.scrollHeight;
+            });
+            </script>
+                 
         </div>
     </div>
 </body>
