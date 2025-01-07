@@ -14,13 +14,54 @@
                 <h2 class="text-gray-800 text-2xl p-4 font-bold">Contactos</h2>
             </div>
 
-            <div class="bg-blue-100 w-3/4 rounded-lg">
-                <h2 class="text-gray-800 text-2xl p-4 font-bold">Mensajes</h2>
-                <button>Presioname</button>
-            </div>
+            <div class="bg-black w-full md:w-3/4 rounded-lg flex flex-col p-4 shadow-2xl h-full">                           
+                
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-white text-2xl font-semibold">Mensajes</h3>
+                    <button class="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-300">
+                        + Nuevo Chat
+                    </button>
+                </div>
 
+                <div class="flex items-center bg-gray-900 text-white rounded-lg px-4 py-2 mb-4 shadow-md">
+                    <input type="text" placeholder="Buscar mensajes..." 
+                        class="flex-1 bg-transparent focus:outline-none text-gray-300 placeholder-gray-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 ml-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+            
+                <!-- Contenedor de mensajes -->
+                <div class="flex flex-col space-y-4 overflow-y-auto h-[60%] bg-cover bg-center rounded-lg p-4 shadow-inner" 
+                    style="background-image: url('./images/fondo_mensaje.jpeg');">
+                    
+                    <div class="flex justify-end">
+                        <div class="bg-blue-600 text-white p-3 rounded-xl max-w-sm shadow-md">
+                            Hola, ¿cómo estás? 😄
+                            <span class="block text-xs text-gray-400 mt-1 text-right">10:30 AM</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-start">
+                        <div class="bg-gray-300 text-gray-700 p-3 rounded-xl max-w-sm shadow-md">
+                            ¡Hola! Todo bien, ¿y tú? 🌟
+                            <span class="block text-xs text-gray-500 mt-1">10:31 AM</span>
+                        </div>
+                    </div>
+                </div>            
+                
+                <div class="mt-4 flex items-center gap-3">
+                    <input type="text" placeholder="Escribe un mensaje..." 
+                        class="flex-1 bg-gray-700 text-gray-200 border-2 border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 placeholder-gray-400">
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                        Enviar
+                    </button>
+                </div>
+            </div>  
+            
         </div>
-       
     </div>
 </body>
+
 </html>
