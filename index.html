@@ -1,17 +1,373 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat en Tiempo Real | SISE</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
+
 <body>
     <div class="h-screen">
         <div class="flex max-w-screen-lg h-full m-auto p-4 gap-4">
 
-            <div class="bg-gray-300 w-1/4 rounded-lg">
-                <h2 class="text-gray-800 text-2xl p-4 font-bold">Contactos</h2>
+            <div class="bg-white w-2/5 rounded-lg p-4 shadow-lg panel flex flex-col">
+                <h2 class="text-gray-800 text-2xl font-bold mb-4">Contactos</h2>
+
+                <div class="relative mb-4">
+                    <input type="text" placeholder="Buscar contactos..."
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 shadow-sm transition-all hover:shadow-lg focus:shadow-md" />
+                </div>
+
+                <div class="flex space-x-4 mb-4">
+                    <button
+                        class="flex items-center justify-center w-1/3 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                        <img src="assets/images/reciente.png" alt="Recientes"
+                            class="w-4 h-4 mr-2" />
+                        Recientes
+                    </button>
+                    <button
+                        class="flex items-center justify-center w-1/3 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                        <img src="assets/images/favorito.png" alt="Favoritos"
+                            class="w-4 h-4 mr-2" />
+                        Favoritos
+                    </button>   
+                    <button
+                        class="flex items-center justify-center w-1/3 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                        <img src="assets/images/grupo.png" alt="Todos"
+                            class="w-4 h-4 mr-2" />
+                        Todos
+                    </button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg overflow-y-auto flex-grow">
+                    <div class="space-y-4">
+                        <div
+                            class="flex items-center justify-between p-2 bg-white rounded-lg shadow hover:bg-blue-100 transition">
+                            <div class="flex items-center">
+                                <div class="relative">
+                                    <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+                                        alt="Avatar" class="w-10 h-10 rounded-full">
+                                    <span
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-800 font-medium">Pedro Pérez</p>
+                                    <p class="text-sm text-gray-500 truncate w-40">Hola, ¿cómo estás?</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <p class="text-sm text-gray-400 mb-6">10:45 AM</p>
+                                <div
+                                    class="absolute top-7 right-1 bg-blue-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    3
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-2 bg-white rounded-lg shadow hover:bg-blue-100 transition">
+                            <div class="flex items-center">
+                                <div class="relative">
+                                    <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+                                        class="w-10 h-10 rounded-full">
+                                    <span
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-800 font-medium">Marcos López</p>
+                                    <p class="text-sm text-gray-500 truncate w-40">Nos vemos mañana.</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <p class="text-sm text-gray-400 mb-6">Ayer</p>
+                                <div
+                                    class="absolute top-7 right-1 bg-blue-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    1
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-2 bg-white rounded-lg shadow hover:bg-blue-100 transition">
+                            <div class="flex items-center">
+                                <div class="relative">
+                                    <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+                                        class="w-10 h-10 rounded-full">
+                                    <span
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-800 font-medium">Carlos Sánchez</p>
+                                    <p class="text-sm text-gray-500 truncate w-40">¡Gran trabajo en el proyecto!</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <p class="text-sm text-gray-400 mb-6">8:30 PM</p>
+                                <div
+                                    class="absolute top-7 right-1 bg-blue-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    2
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-2 bg-white rounded-lg shadow hover:bg-blue-100 transition">
+                            <div class="flex items-center">
+                                <div class="relative">
+                                    <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+                                        class="w-10 h-10 rounded-full">
+                                    <span
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-800 font-medium">Carlos Sánchez</p>
+                                    <p class="text-sm text-gray-500 truncate w-40">¡Gran trabajo en el proyecto!</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <p class="text-sm text-gray-400 mb-6">8:30 PM</p>
+                                <div
+                                    class="absolute top-7 right-1 bg-blue-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    2
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-2 bg-white rounded-lg shadow hover:bg-blue-100 transition">
+                            <div class="flex items-center">
+                                <div class="relative">
+                                    <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+                                        class="w-10 h-10 rounded-full">
+                                    <span
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-800 font-medium">Carlos Sánchez</p>
+                                    <p class="text-sm text-gray-500 truncate w-40">¡Gran trabajo en el proyecto!</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <p class="text-sm text-gray-400 mb-6">8:30 PM</p>
+                                <div
+                                    class="absolute top-7 right-1 bg-blue-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    2
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-2 bg-white rounded-lg shadow hover:bg-blue-100 transition">
+                            <div class="flex items-center">
+                                <div class="relative">
+                                    <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+                                        class="w-10 h-10 rounded-full">
+                                    <span
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-800 font-medium">Carlos Sánchez</p>
+                                    <p class="text-sm text-gray-500 truncate w-40">¡Gran trabajo en el proyecto!</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <p class="text-sm text-gray-400 mb-6">8:30 PM</p>
+                                <div
+                                    class="absolute top-7 right-1 bg-blue-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    2
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-2 bg-white rounded-lg shadow hover:bg-blue-100 transition">
+                            <div class="flex items-center">
+                                <div class="relative">
+                                    <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+                                        class="w-10 h-10 rounded-full">
+                                    <span
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-800 font-medium">Carlos Sánchez</p>
+                                    <p class="text-sm text-gray-500 truncate w-40">¡Gran trabajo en el proyecto!</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <p class="text-sm text-gray-400 mb-6">8:30 PM</p>
+                                <div
+                                    class="absolute top-7 right-1 bg-blue-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    2
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-2 bg-white rounded-lg shadow hover:bg-blue-100 transition">
+                            <div class="flex items-center">
+                                <div class="relative">
+                                    <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+                                        class="w-10 h-10 rounded-full">
+                                    <span
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-800 font-medium">Carlos Sánchez</p>
+                                    <p class="text-sm text-gray-500 truncate w-40">¡Gran trabajo en el proyecto!</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <p class="text-sm text-gray-400 mb-6">8:30 PM</p>
+                                <div
+                                    class="absolute top-7 right-1 bg-blue-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    2
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-2 bg-white rounded-lg shadow hover:bg-blue-100 transition">
+                            <div class="flex items-center">
+                                <div class="relative">
+                                    <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+                                        class="w-10 h-10 rounded-full">
+                                    <span
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-800 font-medium">Carlos Sánchez</p>
+                                    <p class="text-sm text-gray-500 truncate w-40">¡Gran trabajo en el proyecto!</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <p class="text-sm text-gray-400 mb-6">8:30 PM</p>
+                                <div
+                                    class="absolute top-7 right-1 bg-blue-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    2
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-2 bg-white rounded-lg shadow hover:bg-blue-100 transition">
+                            <div class="flex items-center">
+                                <div class="relative">
+                                    <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+                                        class="w-10 h-10 rounded-full">
+                                    <span
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-800 font-medium">Carlos Sánchez</p>
+                                    <p class="text-sm text-gray-500 truncate w-40">¡Gran trabajo en el proyecto!</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <p class="text-sm text-gray-400 mb-6">8:30 PM</p>
+                                <div
+                                    class="absolute top-7 right-1 bg-blue-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    2
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-2 bg-white rounded-lg shadow hover:bg-blue-100 transition">
+                            <div class="flex items-center">
+                                <div class="relative">
+                                    <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+                                        class="w-10 h-10 rounded-full">
+                                    <span
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-800 font-medium">Carlos Sánchez</p>
+                                    <p class="text-sm text-gray-500 truncate w-40">¡Gran trabajo en el proyecto!</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <p class="text-sm text-gray-400 mb-6">8:30 PM</p>
+                                <div
+                                    class="absolute top-7 right-1 bg-blue-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    2
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-2 bg-white rounded-lg shadow hover:bg-blue-100 transition">
+                            <div class="flex items-center">
+                                <div class="relative">
+                                    <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+                                        class="w-10 h-10 rounded-full">
+                                    <span
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-800 font-medium">Carlos Sánchez</p>
+                                    <p class="text-sm text-gray-500 truncate w-40">¡Gran trabajo en el proyecto!</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <p class="text-sm text-gray-400 mb-6">8:30 PM</p>
+                                <div
+                                    class="absolute top-7 right-1 bg-blue-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    2
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-2 bg-white rounded-lg shadow hover:bg-blue-100 transition">
+                            <div class="flex items-center">
+                                <div class="relative">
+                                    <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+                                        class="w-10 h-10 rounded-full">
+                                    <span
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-800 font-medium">Carlos Sánchez</p>
+                                    <p class="text-sm text-gray-500 truncate w-40">¡Gran trabajo en el proyecto!</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <p class="text-sm text-gray-400 mb-6">8:30 PM</p>
+                                <div
+                                    class="absolute top-7 right-1 bg-blue-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    2
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-2 bg-white rounded-lg shadow hover:bg-blue-100 transition">
+                            <div class="flex items-center">
+                                <div class="relative">
+                                    <img src="https://st2.depositphotos.com/3895623/5589/v/450/depositphotos_55896913-stock-illustration-usershirt.jpg"
+                                        class="w-10 h-10 rounded-full">
+                                    <span
+                                        class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-800 font-medium">Carlos Sánchez</p>
+                                    <p class="text-sm text-gray-500 truncate w-40">¡Gran trabajo en el proyecto!</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <p class="text-sm text-gray-400 mb-6">8:30 PM</p>
+                                <div
+                                    class="absolute top-7 right-1 bg-blue-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                                    2
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
 
             <div class="bg-white-300 w-3/4 rounded-lg flex flex-col border-gray-500 border-2 shadow-lg">
@@ -84,9 +440,8 @@
                     });
                 </script>
             </div>
-
         </div>
-       
     </div>
 </body>
+
 </html>
