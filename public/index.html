@@ -374,8 +374,8 @@
             <div class="bg-white-300 w-3/4 rounded-lg flex flex-col border-gray-500 border-2 shadow-lg">
                 <div class="p-4 border-b flex items-center">
                     <img src="assets/images/perfil1.png" alt="Perfil" class="w-10 h-10 rounded-full mr-2">
-                    <h2 class="text-lg font-semibold">Peruano Promedio</h2>
-                    <span class="ml-2 text-gray-600">✅En linea</span>
+                    <h2 class="text-lg font-semibold">SISEGRAM | </h2>
+                    <span id="idSocket" class="ml-2 text-gray-600">...</span>
                 </div>
                 <div class="p-4 h-96 overflow-y-auto flex-1 background " id="chat-window">
                     <div class="mb-4">
@@ -407,12 +407,15 @@
     </div>
 </body>
 <script>
-    
-    const socket = io();
-    console.log('socket',socket);
 
+    const socket = io();
+    const spanIdSocket = document.getElementById('idSocket');
     const form = document.getElementById('chat-form');
     const chatWindow = document.getElementById('chat-window');
+
+    socket.on('connect',()=>{
+        spanIdSocket.textContent = `[${socket.id}] ✅En linea`;
+    });
 
     function getCurrentDateTime() {
         const now = new Date();
