@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat en Tiempo Real | SISE</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
-
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body>
@@ -371,13 +372,6 @@
             </div>
 
             <div class="bg-white-300 w-3/4 rounded-lg flex flex-col border-gray-500 border-2 shadow-lg">
-                <style>
-                    .background {
-                        background-image: url('assets/images/fonditochat.jpg');
-                        background-size: cover; 
-                        background-position: center; 
-                    }
-                </style>
                 <div class="p-4 border-b flex items-center">
                     <img src="assets/images/perfil1.png" alt="Perfil" class="w-10 h-10 rounded-full mr-2">
                     <h2 class="text-lg font-semibold">Peruano Promedio</h2>
@@ -407,41 +401,45 @@
                     <input type="text" id="message" placeholder="Escribe un mensaje..." class="border rounded-lg p-2 w-full" required>
                     <button type="submit" class="bg-blue-500 text-white rounded-lg p-2 mt-2 w-full">Enviar</button>
                 </form>
-                <script>
-                    const form = document.getElementById('chat-form');
-                    const chatWindow = document.getElementById('chat-window');
-            
-                    function getCurrentDateTime() {
-                        const now = new Date();
-                        const options = { hour: '2-digit', minute: '2-digit', hour12: false };
-                        return now.toLocaleString('es-ES', options);
-                    }
-            
-                    form.addEventListener('submit', function(event) {
-                        event.preventDefault();
-                        const messageInput = document.getElementById('message');
-                        const message = messageInput.value;
-                        const dateTime = getCurrentDateTime();
-            
-                        const messageDiv = document.createElement('div');
-                        messageDiv.classList.add('mb-4');
-                        messageDiv.innerHTML = `
-                            <div class="flex items-start justify-end">
-                                <div class="bg-gray-300 text-gray-800 rounded-lg p-2">
-                                    ${message}
-                                    <span class="block text-xs text-gray-500 mt-1">${dateTime}</span>
-                                </div>
-                                <img src="assets/images/perfil2.png" alt="Perfil" class="w-10 h-10 rounded-full ml-2">
-                            </div>
-                        `;
-                        chatWindow.appendChild(messageDiv);
-                        messageInput.value = '';
-                        chatWindow.scrollTop = chatWindow.scrollHeight; 
-                    });
-                </script>
+                
             </div>
         </div>
     </div>
 </body>
+<script>
+    
+    const socket = io();
+    console.log('socket',socket);
 
+    const form = document.getElementById('chat-form');
+    const chatWindow = document.getElementById('chat-window');
+
+    function getCurrentDateTime() {
+        const now = new Date();
+        const options = { hour: '2-digit', minute: '2-digit', hour12: false };
+        return now.toLocaleString('es-ES', options);
+    }
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const messageInput = document.getElementById('message');
+        const message = messageInput.value;
+        const dateTime = getCurrentDateTime();
+
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('mb-4');
+        messageDiv.innerHTML = `
+            <div class="flex items-start justify-end">
+                <div class="bg-gray-300 text-gray-800 rounded-lg p-2">
+                    ${message}
+                    <span class="block text-xs text-gray-500 mt-1">${dateTime}</span>
+                </div>
+                <img src="assets/images/perfil2.png" alt="Perfil" class="w-10 h-10 rounded-full ml-2">
+            </div>
+        `;
+        chatWindow.appendChild(messageDiv);
+        messageInput.value = '';
+        chatWindow.scrollTop = chatWindow.scrollHeight; 
+    });
+</script>
 </html>
