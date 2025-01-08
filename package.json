@@ -1,0 +1,18 @@
+{
+  "name": "chat-tiempo-real",
+  "version": "1.0.0",
+  "description": "Chat en tiempo real con node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "http": "^0.0.1-security",
+    "socket.io": "^4.8.1"
+  }
+}
