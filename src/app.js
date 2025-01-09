@@ -18,7 +18,17 @@ io.on('connection', async (socket)=>{
         //AVISO A LOS DEMAS USUARIOS QUE EL USUARIO X SE HA CONECTADO
         io.emit('evt_usuarioLogin',{
             ...usuario, 
-            time: handshake.time
+            fechaHora: handshake.time
+        });
+    });
+
+    //RECIBO EVENTO MENSAJE DESDE EL USUARIO X
+    socket.on('evt_usuarioMensaje', async(mensaje)=>{
+        console.log('Se ha recibido el mensaje', mensaje);
+        io.emit('evt_usuarioMensaje', {
+            ...mensaje,
+            fechaHora: new Date(),
+            idSocketRemitente: id
         });
     });
 });
