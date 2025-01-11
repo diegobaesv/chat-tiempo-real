@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
 <body>
@@ -24,9 +25,6 @@
                 </div>
                 <div class="bg-white rounded-lg overflow-y-auto flex-grow">
                     <div id="usuariosList" class="space-y-4">
-
-                        
-                        
                     </div>
                 </div>
             </div>
@@ -38,12 +36,13 @@
                     <span id="idSocket" class="ml-2 text-gray-600">...</span>
                 </div>
                 <div class="p-4 h-96 overflow-y-auto flex-1 background " id="chat-window">
+                    
                 </div>
-                <form class="p-4 border-t" id="chat-form">
-                    <input type="text" id="message-input" placeholder="Escribe un mensaje..." class="border rounded-lg p-2 w-full" required>
-                    <button type="submit" class="bg-blue-500 text-white rounded-lg p-2 mt-2 w-full">Enviar</button>
+                <form class="p-4 border-t flex gap-2" id="chat-form">
+                    <input type="text" id="message-input" placeholder="Escribe un mensaje..." class="border p-2 rounded-lg w-11/12" required>
+                    <button type="button" class="bg-gray-400 hover:bg-gray-300 text-white rounded-lg p-2 w-1/12" onclick="onClickLocation()"><i class='bx bxs-map bx-sm'></i></button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-400 text-white rounded-lg p-2 w-1/12"><i class='bx bx-send bx-sm'></i></button>
                 </form>
-                
             </div>
         </div>
     </div>
@@ -145,6 +144,79 @@
         chatWindow.appendChild(messageDiv);
         chatWindow.scrollTop = chatWindow.scrollHeight; 
     });
+
+    socket.on('evt_usuarioLocation',(ubicacion)=>{
+        console.log('evt_usuarioLocation',ubicacion);
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('mb-4');
+
+        if(ubicacion.idSocketRemitente !== idSocketActual){
+            console.log('agregando como no remitente')
+            messageDiv.innerHTML = `
+            <div class="flex items-start">
+                <img src="assets/images/perfil1.png" alt="Perfil" class="w-10 h-10 rounded-full mr-2 shadow-lg">
+                <div class="bg-blue-500 text-white rounded-lg p-2 shadow-lg">
+                    <span class="block text-xs text-gray-100 font-bold">${ubicacion.nickname}</span>
+                    <iframe 
+                            width="300" 
+                            height="170" 
+                            frameborder="0" 
+                            scrolling="no" 
+                            marginheight="0" 
+                            marginwidth="0" 
+                            src="https://maps.google.com/maps?q=${ubicacion.latitude},${ubicacion.longitude}&hl=es&z=14&amp;output=embed"
+                           >
+                           </iframe>
+                    <span class="block text-xs text-gray-300 mt-1 text-right">${formatDate(ubicacion.fechaHora)}</span>
+                </div>
+            </div>
+        `;
+        }else{
+            console.log('agregando como remitente')
+
+            messageDiv.innerHTML = `
+            <div class="flex items-start justify-end">
+                <div class="bg-gray-300 text-gray-800 rounded-lg p-2">
+                    <iframe 
+                            width="300" 
+                            height="170" 
+                            frameborder="0" 
+                            scrolling="no" 
+                            marginheight="0" 
+                            marginwidth="0" 
+                            src="https://maps.google.com/maps?q=${ubicacion.latitude},${ubicacion.longitude}&hl=es&z=14&amp;output=embed"
+                           >
+                           </iframe>
+                    <span class="block text-xs text-gray-500 mt-1">${formatDate(ubicacion.fechaHora)}</span>
+                </div>
+                <img src="assets/images/perfil1.png" alt="Perfil" class="w-10 h-10 rounded-full ml-2">
+            </div>
+        `;
+        }
+        chatWindow.appendChild(messageDiv);
+        chatWindow.scrollTop = chatWindow.scrollHeight; 
+        console.log('fin scroll')
+    });
+
+
+
+    function onClickLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(sendPosition);
+        } else {
+            alert('Geolocation no es soportado por este navegador')
+        }
+    }
+
+    function sendPosition(position) {
+        console.log("Latitude: " + position.coords.latitude);
+        console.log("Longitude: " + position.coords.longitude);
+        socket.emit('evt_usuarioLocation',{
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            nickname
+        });
+    }
 
     function formatDate(fechaSinFormato){
         const fecha = new Date(fechaSinFormato);
