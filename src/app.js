@@ -31,6 +31,16 @@ io.on('connection', async (socket)=>{
             idSocketRemitente: id
         });
     });
+
+    //RECIBO LA UBICACION DEL USUARIO X
+    socket.on('evt_usuarioLocation',async (ubicacion)=>{
+        console.log('Se ha recibido la ubicacion', ubicacion);
+        io.emit('evt_usuarioLocation', {
+            ...ubicacion,
+            fechaHora: new Date(),
+            idSocketRemitente: id
+        });
+    });
 });
 
 module.exports = httpServer; 
