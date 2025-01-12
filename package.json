@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chat-tiempo-real": "file:",
     "express": "^4.21.2",
     "http": "^0.0.1-security",
     "socket.io": "^4.8.1"
