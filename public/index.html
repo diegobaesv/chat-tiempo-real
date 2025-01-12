@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat en Tiempo Real | SISE</title>
+    <title>SISEGRAM</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/logo_sise.jpg">
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -30,10 +31,17 @@
             </div>
 
             <div class="bg-white-300 w-3/4 rounded-lg flex flex-col border-gray-500 border-2 shadow-lg">
-                <div class="p-4 border-b flex items-center">
-                    <img src="assets/images/perfil1.png" alt="Perfil" class="w-10 h-10 rounded-full mr-2">
-                    <h2 class="text-lg font-semibold">SISEGRAM | </h2>
-                    <span id="idSocket" class="ml-2 text-gray-600">...</span>
+                <div class="p-4 border-b flex items-center justify-between">
+                    <div class="flex items-center">
+                        <img src="assets/images/logo_sise.jpg" alt="Perfil" class="w-10 h-10 rounded-full mr-2">
+                        <h2 class="text-lg font-semibold">SISEGRAM | </h2>
+                        <span id="idSocket" class="ml-2 text-gray-600">...</span>
+                    </div>
+                    <select id="cbEstado">
+                        <option value="disponible">✅ Disponible</option>
+                        <option value="ocupado">🟥 Ocupado</option>
+                        <option value="ausente">🟧 Ausente</option>
+                    </select>
                 </div>
                 <div class="p-4 h-96 overflow-y-auto flex-1 background " id="chat-window">
                     
@@ -55,12 +63,13 @@
     const form = document.getElementById('chat-form');
     const chatWindow = document.getElementById('chat-window');
     const messageInput = document.getElementById('message-input');
+    const cbEstado = document.getElementById('cbEstado');
 
     let nickname = '';
     let idSocketActual = '';
 
     socket.on('connect',()=>{
-        spanIdSocket.textContent = `[${socket.id}] ✅En linea`;
+        spanIdSocket.textContent = `[${socket.id}]`;
         idSocketActual = socket.id;
     });
 
@@ -98,11 +107,11 @@
         
 
         divUsuariosList.innerHTML = ` ${divUsuariosList.innerHTML}
-            <div class="flex p-2 bg-gray-100 rounded-lg shadow hover:bg-blue-100 transition">
+            <div id="us_${usuario.idSocketRemitente}" class="flex p-2 bg-gray-100 rounded-lg shadow hover:bg-blue-100 transition">
                             <div class="w-1/4">
                                 <img src="https://st5.depositphotos.com/81334134/76950/v/450/depositphotos_769508200-stock-illustration-man-profile-vector-professional-male.jpg"
                                     alt="Avatar" 
-                                    class="w-10 h-10 rounded-full border border-2 border-green-500">
+                                    class="w-10 h-10 rounded-full border border-4 border-green-500">
                             </div>
                             <div class="w-3/4">
                                 <div class="ml-3">
@@ -198,6 +207,42 @@
         console.log('fin scroll')
     });
 
+    socket.on('evt_usuarioEstado', (estado)=>{
+        console.log('evt_usuarioEstado',estado);
+        const divUsuarios = divUsuariosList.children;
+        for (let i = 0; i < divUsuarios.length; i++) {
+            const divUsuario = divUsuarios[i];
+            console.log('usuario_'+i,divUsuario);
+            if(divUsuario.id == `us_${estado.idSocketRemitente}`){
+                const tagImages = divUsuario.getElementsByTagName('img');
+                if(tagImages && tagImages.length > 0){
+                    const img = tagImages[0];
+                    const classes = img.classList;
+                    console.log('first Clases',classes);
+                    classes.remove('border-green-500');
+                    classes.remove('border-red-500');
+                    classes.remove('border-yellow-600');
+                    if(estado.estado == 'disponible'){
+                        classes.add('border-green-500');
+                    } else if (estado.estado == 'ocupado') {
+                        classes.add('border-red-500');
+                    } else if (estado.estado == 'ausente') {
+                        classes.add('border-yellow-600');
+                    }
+
+                }
+                
+            }
+        }
+    });
+
+    cbEstado.addEventListener('change',(event)=>{
+        const { value } = event.target;
+        console.log('cbEstado.addEventListener::change',value);
+        socket.emit('evt_usuarioEstado',{
+            estado: value
+        });
+    })
 
 
     function onClickLocation() {
