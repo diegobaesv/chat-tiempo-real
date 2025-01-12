@@ -18,7 +18,8 @@ io.on('connection', async (socket)=>{
         //AVISO A LOS DEMAS USUARIOS QUE EL USUARIO X SE HA CONECTADO
         io.emit('evt_usuarioLogin',{
             ...usuario, 
-            fechaHora: handshake.time
+            fechaHora: handshake.time,
+            idSocketRemitente: id
         });
     });
 
@@ -38,6 +39,15 @@ io.on('connection', async (socket)=>{
         io.emit('evt_usuarioLocation', {
             ...ubicacion,
             fechaHora: new Date(),
+            idSocketRemitente: id
+        });
+    });
+
+    //RECIBO EL CAMBIO DE ESTADO DEL USUARIO X
+    socket.on('evt_usuarioEstado', async (estado)=>{
+        console.log('Se ha recibido un cambio de estado', estado);
+        io.emit('evt_usuarioEstado',{
+            ...estado,
             idSocketRemitente: id
         });
     });
