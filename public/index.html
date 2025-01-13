@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
@@ -16,10 +16,8 @@
 <body>
     <div class="h-screen">
         <div class="flex max-w-screen-lg h-full m-auto p-4 gap-4">
-
             <div class="bg-white w-1/4 rounded-lg p-4 shadow-lg panel flex flex-col">
                 <h2 class="text-gray-800 text-2xl font-bold mb-4">Contactos</h2>
-
                 <div class="relative mb-4">
                     <input type="text" placeholder="Buscar contactos..."
                         class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 shadow-sm transition-all hover:shadow-lg focus:shadow-md" />
@@ -43,8 +41,11 @@
                         <option value="ausente">🟧 Ausente</option>
                     </select>
                 </div>
-                <div class="p-4 h-96 overflow-y-auto flex-1 background " id="chat-window">
-                    
+                <div id="pinned-message" class="p-4 bg-yellow-100 hidden"> 
+                    <strong>Mensaje Fijado:</strong> <span id="pinned-content"></span> 
+                    <button onclick="unpinMessage()" class="ml-2 text-sm text-red-500">Desfijar</button>
+                </div>
+                <div class="p-4 h-96 overflow-y-auto flex-1 background" id="chat-window">
                 </div>
                 <form class="p-4 border-t flex gap-2" id="chat-form">
                     <input type="text" id="message-input" placeholder="Escribe un mensaje..." class="border p-2 rounded-lg w-11/12" required>
@@ -55,8 +56,8 @@
         </div>
     </div>
 </body>
-<script>
 
+<script>
     const socket = io();
     const spanIdSocket = document.getElementById('idSocket');
     const divUsuariosList = document.getElementById('usuariosList');
@@ -64,14 +65,11 @@
     const chatWindow = document.getElementById('chat-window');
     const messageInput = document.getElementById('message-input');
     const cbEstado = document.getElementById('cbEstado');
+    const pinnedMessageContainer = document.getElementById('pinned-message');
+    const pinnedContent = document.getElementById('pinned-content');
 
     let nickname = '';
     let idSocketActual = '';
-
-    socket.on('connect',()=>{
-        spanIdSocket.textContent = `[${socket.id}]`;
-        idSocketActual = socket.id;
-    });
 
     Swal.fire({
         title: 'Ingresa tu nombre de usuario',
@@ -83,77 +81,131 @@
         confirmButtonText: "Ingresar",
         showLoaderOnConfirm: true,
         preConfirm: async (username) => {
-            if(!username){
+            if (!username) {
                 Swal.showValidationMessage('Debes ingresar un nombre de usuario');
                 return false;
             }
-            if(username.trim().length < 3){
+            if (username.trim().length < 3) {
                 Swal.showValidationMessage('Debes ingresar un nombre de usuario de al menos 3 caracteres');
                 return false;
             }
             return username;
         },
         allowOutsideClick: false
-    }).then((result)=>{
-        if(result.isConfirmed){
+    }).then((result) => {
+        if (result.isConfirmed) {
             nickname = result.value;
-            console.log('nickname',nickname);
-            socket.emit('evt_usuarioLogin',{nickname});
+            socket.emit('evt_usuarioLogin', { nickname });
         }
     });
 
-    socket.on('evt_usuarioLogin', (usuario)=>{
-        console.log('evt_usuarioLogin',usuario);
-        
-
-        divUsuariosList.innerHTML = ` ${divUsuariosList.innerHTML}
-            <div id="us_${usuario.idSocketRemitente}" class="flex p-2 bg-gray-100 rounded-lg shadow hover:bg-blue-100 transition">
-                            <div class="w-1/4">
-                                <img src="assets/images/foto_perfil.jpg"
-                                    alt="Avatar" 
-                                    class="w-10 h-10 rounded-full border border-4 border-green-500">
-                            </div>
-                            <div class="w-3/4">
-                                <div class="ml-3">
-                                    <p class="text-gray-800 font-medium">${usuario.nickname}</p>
-                                    <p class="text-sm text-gray-400">${formatDate(usuario.fechaHora)}</p>
-                                </div>
-                            </div>
-                        </div>
-        `;
+    socket.on('connect', () => {
+        spanIdSocket.textContent = `[${socket.id}]`;
+        idSocketActual = socket.id;
     });
 
-    socket.on('evt_usuarioMensaje',(mensaje)=>{
-        console.log('evt_usuarioMensaje',mensaje);
+    function pinMessage(content) {
+        pinnedContent.innerText = content;
+        pinnedMessageContainer.classList.remove('hidden');
+
+       
+        socket.emit('evt_pinMessage', content);
+    }
+
+    function unpinMessage() {
+        pinnedMessageContainer.classList.add('hidden');
+        socket.emit('evt_unpinMessage'); 
+    }
+    socket.on('evt_usuarioEstado', (usuario) => {
+        console.log('evt_usuarioEstado', usuario);
+
+  
+    const divUsuarios = divUsuariosList.children;
+    for (let i = 0; i < divUsuarios.length; i++) {
+        const divUsuario = divUsuarios[i];
+
+        if (divUsuario.id === `us_${usuario.idSocketRemitente}`) {
+            const img = divUsuario.querySelector('img'); 
+            if (img) {
+             
+                img.classList.remove('border-green-500', 'border-red-500', 'border-yellow-500');
+                
+ 
+                img.classList.add(getBorderColor(usuario.estado));
+            }
+        }
+    }
+});
+
+    socket.on('evt_usuarioLogin', (usuario) => {
+        console.log('evt_usuarioLogin', usuario);
+
+  
+    divUsuariosList.innerHTML += `
+        <div id="us_${usuario.idSocketRemitente}" class="flex p-2 bg-gray-100 rounded-lg shadow hover:bg-blue-100 transition">
+            <div class="w-1/4">
+                <img src="assets/images/foto_perfil.jpg" alt="Avatar" 
+                    class="w-10 h-10 rounded-full border-4 ${getBorderColor(usuario.estado)}">
+            </div>
+            <div class="w-3/4">
+                <div class="ml-3">
+                    <p class="text-gray-800 font-medium">${usuario.nickname}</p>
+                    <p class="text-sm text-gray-400">${formatDate(usuario.fechaHora)}</p>
+                </div>
+            </div>
+        </div>
+    `;
+    });
+    cbEstado.addEventListener('change', function () {
+        const estado = cbEstado.value;
+    console.log("Nuevo estado:", estado); 
+    socket.emit('evt_usuarioEstado', { estado, nickname });
+});
+
+    socket.on('evt_pinMessage', (content) => {
+        pinnedContent.innerText = content;
+        pinnedMessageContainer.classList.remove('hidden');
+    });
+
+    socket.on('evt_unpinMessage', () => {
+        pinnedMessageContainer.classList.add('hidden');
+    });
+    socket.on('evt_cambiarEstado', (usuario) => {
+        const usuarioDiv = document.getElementById(`us_${usuario.idSocketRemitente}`);
+    if (usuarioDiv) {
+        const estadoElement = usuarioDiv.querySelector('.estado');
+        estadoElement.textContent = `Estado: ${usuario.estado}`;
+    }
+});
+
+
+    socket.on('evt_usuarioMensaje', (mensaje) => {
         const messageDiv = document.createElement('div');
-        messageDiv.classList.add('mb-4');
+    messageDiv.classList.add('mb-4', 'relative', 'flex'); 
 
-        if(mensaje.idSocketRemitente !== idSocketActual){
-            messageDiv.innerHTML = `
-            <div class="flex items-start">
-                <img src="${mensaje.isIa ? 'assets/images/foto_robot.jpg' : 'assets/images/foto_perfil.jpg'}" alt="Perfil" class="w-10 h-10 rounded-full mr-2 shadow-lg">
-                <div class="bg-blue-500 text-white rounded-lg p-2 shadow-lg">
-                    <span class="block text-xs text-gray-100 font-bold">${mensaje.nickname}</span>
-                    ${mensaje.message}
-                    <span class="block text-xs text-gray-300 mt-1 text-right">${formatDate(mensaje.fechaHora)}</span>
-                </div>
+    const messageContent = mensaje.message;
+    const senderNickname = mensaje.nickname;  
+    const senderPhoto = mensaje.photo || 'assets/images/default_profile.jpg'; 
+
+    
+    messageDiv.innerHTML = `
+        <div class="flex items-start justify-end"> <!-- Cambié 'justify-start' por 'justify-end' para alinearlo a la derecha -->
+            <div class="ml-2">
+                <img src="${senderPhoto}" alt="Foto de perfil" class="w-8 h-8 rounded-full border-2 border-white shadow-lg">
             </div>
-        `;
-        }else{
-            messageDiv.innerHTML = `
-            <div class="flex items-start justify-end">
-                <div class="bg-gray-300 text-gray-800 rounded-lg p-2">
-                    ${mensaje.message}
-                    <span class="block text-xs text-gray-500 mt-1">${formatDate(mensaje.fechaHora)}</span>
-                </div>
-                <img src="assets/images/foto_perfil.jpg" alt="Perfil" class="w-10 h-10 rounded-full ml-2">
+            <div class="${mensaje.idSocketRemitente !== idSocketActual ? 'bg-blue-500 text-white' : 'bg-gray-400 text-gray-800'} rounded-lg p-2 shadow-lg">
+                <strong class="block">${senderNickname}</strong> <!-- Nombre de usuario arriba -->
+                <p>${messageContent}</p> <!-- Mensaje debajo -->
+                <span class="block text-xs text-gray-300 mt-1 text-right">${formatDate(mensaje.fechaHora)}</span>
             </div>
-        `;
-        }
+            <button class="absolute top-0 right-0 text-gray-400 hover:text-gray-700" onclick="pinMessage('${messageContent}')">
+                <i class='bx bx-pin'></i>
+            </button>
+        </div>
+    `;
         chatWindow.appendChild(messageDiv);
-        chatWindow.scrollTop = chatWindow.scrollHeight; 
+        chatWindow.scrollTop = chatWindow.scrollHeight;
     });
-
     socket.on('evt_usuarioLocation',(ubicacion)=>{
         console.log('evt_usuarioLocation',ubicacion);
         const messageDiv = document.createElement('div');
@@ -206,88 +258,57 @@
         chatWindow.scrollTop = chatWindow.scrollHeight; 
         console.log('fin scroll')
     });
+    cbEstado.addEventListener('change', function () {
+        const estado = cbEstado.value;
+    console.log("Nuevo estado:", estado); 
+    socket.emit('evt_usuarioEstado', { estado, nickname });
+});
 
-    socket.on('evt_usuarioEstado', (estado)=>{
-        console.log('evt_usuarioEstado',estado);
-        const divUsuarios = divUsuariosList.children;
-        for (let i = 0; i < divUsuarios.length; i++) {
-            const divUsuario = divUsuarios[i];
-            console.log('usuario_'+i,divUsuario);
-            if(divUsuario.id == `us_${estado.idSocketRemitente}`){
-                const tagImages = divUsuario.getElementsByTagName('img');
-                if(tagImages && tagImages.length > 0){
-                    const img = tagImages[0];
-                    const classes = img.classList;
-                    console.log('first Clases',classes);
-                    classes.remove('border-green-500');
-                    classes.remove('border-red-500');
-                    classes.remove('border-yellow-600');
-                    if(estado.estado == 'disponible'){
-                        classes.add('border-green-500');
-                    } else if (estado.estado == 'ocupado') {
-                        classes.add('border-red-500');
-                    } else if (estado.estado == 'ausente') {
-                        classes.add('border-yellow-600');
-                    }
-
-                }
-                
-            }
-        }
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+    const message = messageInput.value.trim();
+    const photo = 'assets/images/foto_perfil.jpg'; 
+    socket.emit('evt_usuarioMensaje', { message, nickname, photo });
+    messageInput.value = '';
     });
+    
 
-    cbEstado.addEventListener('change',(event)=>{
-        const { value } = event.target;
-        console.log('cbEstado.addEventListener::change',value);
-        socket.emit('evt_usuarioEstado',{
-            estado: value
-        });
-    })
+    function getBorderColor(estado) {
+    switch (estado) {
+        case 'disponible':
+            return 'border-green-500'; 
+        case 'ocupado':
+            return 'border-red-500'; 
+        case 'ausente':
+            return 'border-orange-500'; 
+        default:
+            
+            return 'border-green-500'; 
+    }
+}
 
+
+    function formatDate(fechaSinFormato) {
+        const fecha = new Date(fechaSinFormato);
+        return `${String(fecha.getHours()).padStart(2, '0')}:${String(fecha.getMinutes()).padStart(2, '0')}`;
+    }
 
     function onClickLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(sendPosition);
         } else {
-            alert('Geolocation no es soportado por este navegador')
+            alert('La geolocalización no es soportada por este navegador');
         }
     }
 
     function sendPosition(position) {
-        console.log("Latitude: " + position.coords.latitude);
-        console.log("Longitude: " + position.coords.longitude);
-        socket.emit('evt_usuarioLocation',{
+        socket.emit('evt_usuarioLocation', {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
             nickname
         });
     }
-
-    function formatDate(fechaSinFormato){
-        const fecha = new Date(fechaSinFormato);
-
-        const dia = String(fecha.getDate()).padStart(2, '0');
-        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-        const año = fecha.getFullYear();
-        const horas = String(fecha.getHours()).padStart(2, '0');
-        const minutos = String(fecha.getMinutes()).padStart(2, '0');
-        const segundos = String(fecha.getSeconds()).padStart(2, '0');
-
-        //return `${dia}/${mes}/${año} ${horas}:${minutos}:${segundos}`;
-        return `${horas}:${minutos}`;
-    }
-
-    function getCurrentDateTime() {
-        const now = new Date();
-        const options = { hour: '2-digit', minute: '2-digit', hour12: false };
-        return now.toLocaleString('es-ES', options);
-    }
-
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const message = messageInput.value.trim();
-        socket.emit('evt_usuarioMensaje',{message,nickname});
-        messageInput.value = '';
-    });
 </script>
+
 </html>
+
