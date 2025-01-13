@@ -34,7 +34,9 @@ io.on('connection', async (socket)=>{
             ...mensaje,
             fechaHora: new Date(),
             idSocketRemitente: id,
-            isIa: false
+            isIa: false,
+            message: mensaje.message || '',
+            image: mensaje.image
         });
         if(mensaje.message.startsWith('@sisegpt')){
             const url = "https://api-inference.huggingface.co/models/mistralai/Mistral-Nemo-Instruct-2407";
