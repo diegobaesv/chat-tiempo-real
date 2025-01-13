@@ -109,7 +109,7 @@
         divUsuariosList.innerHTML = ` ${divUsuariosList.innerHTML}
             <div id="us_${usuario.idSocketRemitente}" class="flex p-2 bg-gray-100 rounded-lg shadow hover:bg-blue-100 transition">
                             <div class="w-1/4">
-                                <img src="https://st5.depositphotos.com/81334134/76950/v/450/depositphotos_769508200-stock-illustration-man-profile-vector-professional-male.jpg"
+                                <img src="assets/images/foto_perfil.jpg"
                                     alt="Avatar" 
                                     class="w-10 h-10 rounded-full border border-4 border-green-500">
                             </div>
@@ -131,7 +131,7 @@
         if(mensaje.idSocketRemitente !== idSocketActual){
             messageDiv.innerHTML = `
             <div class="flex items-start">
-                <img src="assets/images/perfil1.png" alt="Perfil" class="w-10 h-10 rounded-full mr-2 shadow-lg">
+                <img src="${mensaje.isIa ? 'assets/images/foto_robot.jpg' : 'assets/images/foto_perfil.jpg'}" alt="Perfil" class="w-10 h-10 rounded-full mr-2 shadow-lg">
                 <div class="bg-blue-500 text-white rounded-lg p-2 shadow-lg">
                     <span class="block text-xs text-gray-100 font-bold">${mensaje.nickname}</span>
                     ${mensaje.message}
@@ -146,7 +146,7 @@
                     ${mensaje.message}
                     <span class="block text-xs text-gray-500 mt-1">${formatDate(mensaje.fechaHora)}</span>
                 </div>
-                <img src="assets/images/perfil1.png" alt="Perfil" class="w-10 h-10 rounded-full ml-2">
+                <img src="assets/images/foto_perfil.jpg" alt="Perfil" class="w-10 h-10 rounded-full ml-2">
             </div>
         `;
         }
@@ -285,7 +285,7 @@
 
     form.addEventListener('submit', function(event) {
         event.preventDefault();
-        const message = messageInput.value;
+        const message = messageInput.value.trim();
         socket.emit('evt_usuarioMensaje',{message,nickname});
         messageInput.value = '';
     });
