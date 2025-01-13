@@ -8,6 +8,7 @@ const httpServer = http.createServer(app);
 const io = socket(httpServer);
 
 const apiKeyIa = process.env.API_KEY_IA
+console.log('apiKeyIa',apiKeyIa)
 
 app.use(express.static('public'));
 
