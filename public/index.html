@@ -64,6 +64,7 @@
     const chatWindow = document.getElementById('chat-window');
     const messageInput = document.getElementById('message-input');
     const cbEstado = document.getElementById('cbEstado');
+    const sonidoNotificacion = new Audio('assets/sounds/notification.mp3');
 
     let nickname = '';
     let idSocketActual = '';
@@ -139,6 +140,7 @@
                 </div>
             </div>
         `;
+        sonidoNotificacion.play();
         }else{
             messageDiv.innerHTML = `
             <div class="flex items-start justify-end">
