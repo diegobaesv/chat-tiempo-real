@@ -43,6 +43,10 @@
                         <option value="ausente">🟧 Ausente</option>
                     </select>
                 </div>
+                <div id="pinned-message" class="p-4 bg-yellow-100 hidden"> 
+                    <strong>Mensaje Fijado:</strong> <span id="pinned-content"></span> 
+                    <button onclick="unpinMessage()" class="ml-2 text-sm text-red-500">Desfijar</button>
+                </div>
                 <div class="p-4 h-96 overflow-y-auto flex-1 background " id="chat-window">
                     
                 </div>
@@ -64,6 +68,8 @@
     const chatWindow = document.getElementById('chat-window');
     const messageInput = document.getElementById('message-input');
     const cbEstado = document.getElementById('cbEstado');
+    const pinnedMessageContainer = document.getElementById('pinned-message');
+    const pinnedContent = document.getElementById('pinned-content');
 
     let nickname = '';
     let idSocketActual = '';
@@ -126,6 +132,7 @@
     socket.on('evt_usuarioMensaje',(mensaje)=>{
         console.log('evt_usuarioMensaje',mensaje);
         const messageDiv = document.createElement('div');
+        const messageContent = mensaje.message;
         messageDiv.classList.add('mb-4');
 
         if(mensaje.idSocketRemitente !== idSocketActual){
@@ -138,6 +145,10 @@
                     <span class="block text-xs text-gray-300 mt-1 text-right">${formatDate(mensaje.fechaHora)}</span>
                 </div>
             </div>
+            <button class="absolute top-0 right-0 text-gray-400 hover:text-gray-700" onclick="pinMessage('${messageContent}')">
+                <i class='bx bx-pin'></i>
+            </button>
+        </div>
         `;
         }else{
             messageDiv.innerHTML = `
@@ -148,6 +159,7 @@
                 </div>
                 <img src="assets/images/foto_perfil.jpg" alt="Perfil" class="w-10 h-10 rounded-full ml-2">
             </div>
+            
         `;
         }
         chatWindow.appendChild(messageDiv);
@@ -235,6 +247,13 @@
             }
         }
     });
+    socket.on('evt_pinMessage', (content) => {
+        pinnedContent.innerText = content;
+        pinnedMessageContainer.classList.remove('hidden');
+    });
+    socket.on('evt_unpinMessage', () => {
+        pinnedMessageContainer.classList.add('hidden');
+    });
 
     cbEstado.addEventListener('change',(event)=>{
         const { value } = event.target;
@@ -261,6 +280,16 @@
             longitude: position.coords.longitude,
             nickname
         });
+    }
+    function pinMessage(content) {
+        pinnedContent.innerText = content;
+        pinnedMessageContainer.classList.remove('hidden');
+       
+        socket.emit('evt_pinMessage', content);
+    }
+    function unpinMessage() {
+        pinnedMessageContainer.classList.add('hidden');
+        socket.emit('evt_unpinMessage'); 
     }
 
     function formatDate(fechaSinFormato){

@@ -84,6 +84,12 @@ io.on('connection', async (socket)=>{
             idSocketRemitente: id
         });
     });
+    socket.on('evt_pinMessage', (content) => {
+        io.emit('evt_pinMessage', content); 
+    });
+    socket.on('evt_unpinMessage', () => {
+        io.emit('evt_unpinMessage'); 
+    });
 
     //RECIBO EL CAMBIO DE ESTADO DEL USUARIO X
     socket.on('evt_usuarioEstado', async (estado)=>{
