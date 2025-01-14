@@ -46,6 +46,10 @@
                 <div class="p-4 h-96 overflow-y-auto flex-1 background " id="chat-window">
                     
                 </div>
+                <div id="scroll-to-bottom-btn" 
+                    class="hidden fixed bottom-4 right-4 bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded-full shadow-lg transition-all duration-300">
+                    <i class="bx bx-down-arrow-alt bx-sm"></i>
+                </div>
                 <div class="flex flex-col items-start space-y-2">
                     <div id="preview-container" class="hidden w-full flex items-center space-x-2 mb-2">
                         <img id="preview-image" class="w-24 h-24 rounded-lg shadow-md" alt="Vista previa">
@@ -81,6 +85,8 @@
     const previewContainer = document.getElementById('preview-container');
     const previewImage = document.getElementById('preview-image');
     const removeFileButton = document.getElementById('remove-file');
+    const sonidoNotificacion = new Audio('assets/sounds/notification.mp3');
+    const scrollToBottomBtn = document.getElementById('scroll-to-bottom-btn');
 
     let nickname = '';
     let idSocketActual = '';
@@ -157,6 +163,7 @@
                 </div>
             </div>
         `;
+        sonidoNotificacion.play();
         }else{
             messageDiv.innerHTML = `
             <div class="flex items-start justify-end">
@@ -340,6 +347,24 @@
         imageInput.value = '';
         previewImage.src = '';
         previewContainer.classList.add('hidden');
+    });
+
+    chatWindow.addEventListener('scroll', () => {
+    const scrollPosition = chatWindow.scrollTop + chatWindow.offsetHeight;
+    const scrollHeight = chatWindow.scrollHeight;
+
+    if (scrollPosition < scrollHeight - 50) { // Si está lejos del final del chat
+        scrollToBottomBtn.classList.remove('hidden');
+    } else { // Si está al final del chat
+        scrollToBottomBtn.classList.add('hidden');
+    }
+    });
+
+    scrollToBottomBtn.addEventListener('click', () => {
+        chatWindow.scrollTo({
+            top: chatWindow.scrollHeight,
+            behavior: 'smooth'
+        });
     });
 </script>
 </html>
