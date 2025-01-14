@@ -11,6 +11,8 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+
 </head>
 
 <body>
@@ -44,12 +46,23 @@
                     </select>
                 </div>
                 <div class="p-4 h-96 overflow-y-auto flex-1 background " id="chat-window">
-                    
+
                 </div>
-                <form class="p-4 border-t flex gap-2" id="chat-form">
-                    <input type="text" id="message-input" placeholder="Escribe un mensaje..." class="border p-2 rounded-lg w-11/12" required>
-                    <button type="button" class="bg-gray-400 hover:bg-gray-300 text-white rounded-lg p-2 w-1/12" onclick="onClickLocation()"><i class='bx bxs-map bx-sm'></i></button>
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-400 text-white rounded-lg p-2 w-1/12"><i class='bx bx-send bx-sm'></i></button>
+                <form class="relative p-4 border-t flex gap-2" id="chat-form">
+                    <input type="text" id="message-input" placeholder="Escribe un mensaje..."
+                        class="border p-2 rounded-lg w-11/12" required>
+                   
+                    <button id="emoji-btn" type="button" class="ml-2">
+                        😊
+                    </button>
+
+                    <emoji-picker id="emoji-picker"
+                        class="hidden absolute bottom-16 left-0 z-50 bg-white rounded-lg shadow-lg"></emoji-picker>
+
+                    <button type="button" class="bg-gray-400 hover:bg-gray-300 text-white rounded-lg p-2 w-1/12"
+                        onclick="onClickLocation()"><i class='bx bxs-map bx-sm'></i></button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-400 text-white rounded-lg p-2 w-1/12"><i
+                            class='bx bx-send bx-sm'></i></button>
                 </form>
             </div>
         </div>
@@ -68,7 +81,18 @@
     let nickname = '';
     let idSocketActual = '';
 
-    socket.on('connect',()=>{
+    document.getElementById('emoji-btn').addEventListener('click', () => {
+        const emojiPicker = document.getElementById('emoji-picker');
+        emojiPicker.classList.toggle('hidden'); 
+    });
+
+   
+    document.getElementById('emoji-picker').addEventListener('emoji-click', (e) => {
+        const messageInput = document.getElementById('message-input');
+        messageInput.value += e.detail.unicode; 
+    });
+
+    socket.on('connect', () => {
         spanIdSocket.textContent = `[${socket.id}]`;
         idSocketActual = socket.id;
     });
@@ -83,28 +107,28 @@
         confirmButtonText: "Ingresar",
         showLoaderOnConfirm: true,
         preConfirm: async (username) => {
-            if(!username){
+            if (!username) {
                 Swal.showValidationMessage('Debes ingresar un nombre de usuario');
                 return false;
             }
-            if(username.trim().length < 3){
+            if (username.trim().length < 3) {
                 Swal.showValidationMessage('Debes ingresar un nombre de usuario de al menos 3 caracteres');
                 return false;
             }
             return username;
         },
         allowOutsideClick: false
-    }).then((result)=>{
-        if(result.isConfirmed){
+    }).then((result) => {
+        if (result.isConfirmed) {
             nickname = result.value;
-            console.log('nickname',nickname);
-            socket.emit('evt_usuarioLogin',{nickname});
+            console.log('nickname', nickname);
+            socket.emit('evt_usuarioLogin', { nickname });
         }
     });
 
-    socket.on('evt_usuarioLogin', (usuario)=>{
-        console.log('evt_usuarioLogin',usuario);
-        
+    socket.on('evt_usuarioLogin', (usuario) => {
+        console.log('evt_usuarioLogin', usuario);
+
 
         divUsuariosList.innerHTML = ` ${divUsuariosList.innerHTML}
             <div id="us_${usuario.idSocketRemitente}" class="flex p-2 bg-gray-100 rounded-lg shadow hover:bg-blue-100 transition">
@@ -123,12 +147,12 @@
         `;
     });
 
-    socket.on('evt_usuarioMensaje',(mensaje)=>{
-        console.log('evt_usuarioMensaje',mensaje);
+    socket.on('evt_usuarioMensaje', (mensaje) => {
+        console.log('evt_usuarioMensaje', mensaje);
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('mb-4');
 
-        if(mensaje.idSocketRemitente !== idSocketActual){
+        if (mensaje.idSocketRemitente !== idSocketActual) {
             messageDiv.innerHTML = `
             <div class="flex items-start">
                 <img src="${mensaje.isIa ? 'assets/images/foto_robot.jpg' : 'assets/images/foto_perfil.jpg'}" alt="Perfil" class="w-10 h-10 rounded-full mr-2 shadow-lg">
@@ -139,7 +163,7 @@
                 </div>
             </div>
         `;
-        }else{
+        } else {
             messageDiv.innerHTML = `
             <div class="flex items-start justify-end">
                 <div class="bg-gray-300 text-gray-800 rounded-lg p-2">
@@ -151,15 +175,15 @@
         `;
         }
         chatWindow.appendChild(messageDiv);
-        chatWindow.scrollTop = chatWindow.scrollHeight; 
+        chatWindow.scrollTop = chatWindow.scrollHeight;
     });
 
-    socket.on('evt_usuarioLocation',(ubicacion)=>{
-        console.log('evt_usuarioLocation',ubicacion);
+    socket.on('evt_usuarioLocation', (ubicacion) => {
+        console.log('evt_usuarioLocation', ubicacion);
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('mb-4');
 
-        if(ubicacion.idSocketRemitente !== idSocketActual){
+        if (ubicacion.idSocketRemitente !== idSocketActual) {
             console.log('agregando como no remitente')
             messageDiv.innerHTML = `
             <div class="flex items-start">
@@ -180,7 +204,7 @@
                 </div>
             </div>
         `;
-        }else{
+        } else {
             console.log('agregando como remitente')
 
             messageDiv.innerHTML = `
@@ -203,26 +227,26 @@
         `;
         }
         chatWindow.appendChild(messageDiv);
-        chatWindow.scrollTop = chatWindow.scrollHeight; 
+        chatWindow.scrollTop = chatWindow.scrollHeight;
         console.log('fin scroll')
     });
 
-    socket.on('evt_usuarioEstado', (estado)=>{
-        console.log('evt_usuarioEstado',estado);
+    socket.on('evt_usuarioEstado', (estado) => {
+        console.log('evt_usuarioEstado', estado);
         const divUsuarios = divUsuariosList.children;
         for (let i = 0; i < divUsuarios.length; i++) {
             const divUsuario = divUsuarios[i];
-            console.log('usuario_'+i,divUsuario);
-            if(divUsuario.id == `us_${estado.idSocketRemitente}`){
+            console.log('usuario_' + i, divUsuario);
+            if (divUsuario.id == `us_${estado.idSocketRemitente}`) {
                 const tagImages = divUsuario.getElementsByTagName('img');
-                if(tagImages && tagImages.length > 0){
+                if (tagImages && tagImages.length > 0) {
                     const img = tagImages[0];
                     const classes = img.classList;
-                    console.log('first Clases',classes);
+                    console.log('first Clases', classes);
                     classes.remove('border-green-500');
                     classes.remove('border-red-500');
                     classes.remove('border-yellow-600');
-                    if(estado.estado == 'disponible'){
+                    if (estado.estado == 'disponible') {
                         classes.add('border-green-500');
                     } else if (estado.estado == 'ocupado') {
                         classes.add('border-red-500');
@@ -231,15 +255,15 @@
                     }
 
                 }
-                
+
             }
         }
     });
 
-    cbEstado.addEventListener('change',(event)=>{
+    cbEstado.addEventListener('change', (event) => {
         const { value } = event.target;
-        console.log('cbEstado.addEventListener::change',value);
-        socket.emit('evt_usuarioEstado',{
+        console.log('cbEstado.addEventListener::change', value);
+        socket.emit('evt_usuarioEstado', {
             estado: value
         });
     })
@@ -256,14 +280,14 @@
     function sendPosition(position) {
         console.log("Latitude: " + position.coords.latitude);
         console.log("Longitude: " + position.coords.longitude);
-        socket.emit('evt_usuarioLocation',{
+        socket.emit('evt_usuarioLocation', {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
             nickname
         });
     }
 
-    function formatDate(fechaSinFormato){
+    function formatDate(fechaSinFormato) {
         const fecha = new Date(fechaSinFormato);
 
         const dia = String(fecha.getDate()).padStart(2, '0');
@@ -283,11 +307,24 @@
         return now.toLocaleString('es-ES', options);
     }
 
-    form.addEventListener('submit', function(event) {
+    form.addEventListener('submit', function (event) {
         event.preventDefault();
         const message = messageInput.value.trim();
-        socket.emit('evt_usuarioMensaje',{message,nickname});
+        socket.emit('evt_usuarioMensaje', { message, nickname });
         messageInput.value = '';
+
+        
+        const emojiPicker = document.getElementById('emoji-picker');
+        emojiPicker.classList.add('hidden');
+    });
+
+   
+    document.querySelectorAll('.emoji-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const emoji = e.target.dataset.emoji;
+            messageInput.value += emoji;
+        });
     });
 </script>
+
 </html>
