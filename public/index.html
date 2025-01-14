@@ -11,6 +11,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
 </head>
 
 <body>
@@ -46,8 +47,10 @@
                 <div class="p-4 h-96 overflow-y-auto flex-1 background " id="chat-window">
                     
                 </div>
-                <form class="p-4 border-t flex gap-2" id="chat-form">
+                <form class="relative p-4 border-t flex gap-2" id="chat-form">
                     <input type="text" id="message-input" placeholder="Escribe un mensaje..." class="border p-2 rounded-lg w-11/12" required>
+                    <button id="emoji-btn" type="button" class="ml-2">😊</button>
+                    <emoji-picker id="emoji-picker"class="hidden absolute bottom-16 left-0 z-50 bg-white rounded-lg shadow-lg"></emoji-picker>
                     <button type="button" class="bg-gray-400 hover:bg-gray-300 text-white rounded-lg p-2 w-1/12" onclick="onClickLocation()"><i class='bx bxs-map bx-sm'></i></button>
                     <button type="submit" class="bg-blue-500 hover:bg-blue-400 text-white rounded-lg p-2 w-1/12"><i class='bx bx-send bx-sm'></i></button>
                 </form>
@@ -67,7 +70,14 @@
 
     let nickname = '';
     let idSocketActual = '';
-
+    document.getElementById('emoji-btn').addEventListener('click', () => {
+        const emojiPicker = document.getElementById('emoji-picker');
+        emojiPicker.classList.toggle('hidden'); 
+    });
+    document.getElementById('emoji-picker').addEventListener('emoji-click', (e) => {
+        const messageInput = document.getElementById('message-input');
+        messageInput.value += e.detail.unicode; 
+    });
     socket.on('connect',()=>{
         spanIdSocket.textContent = `[${socket.id}]`;
         idSocketActual = socket.id;
@@ -288,6 +298,14 @@
         const message = messageInput.value.trim();
         socket.emit('evt_usuarioMensaje',{message,nickname});
         messageInput.value = '';
+        const emojiPicker = document.getElementById('emoji-picker');
+        emojiPicker.classList.add('hidden');
+    });
+    document.querySelectorAll('.emoji-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const emoji = e.target.dataset.emoji;
+            messageInput.value += emoji; 
+        });
     });
 </script>
 </html>
